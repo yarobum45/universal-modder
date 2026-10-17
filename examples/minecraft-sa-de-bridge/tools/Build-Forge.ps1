@@ -22,6 +22,17 @@ if (-not (Test-Path $gradle)) {
     Expand-Archive -Path $zip -DestinationPath $tools -Force
 }
 $env:GRADLE_USER_HOME = Join-Path $root 'artifacts/gradle-home'
-& $gradle --no-daemon --console=plain -p (Join-Path $root 'mc') build
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+# PS 5.1 wraps native stderr as ErrorRecord. Print it into the transcript while
+# deciding success from the native exit code, not from stderr text.
+$savedPreference = $ErrorActionPreference
+try {
+    $ErrorActionPreference = 'Continue'
+    $global:LASTEXITCODE = $null
+    & $gradle --no-daemon --console=plain -p (Join-Path $root 'mc') clean build 2>&1 |
+        ForEach-Object { Write-Host $_.ToString() }
+    $gradleExit = $global:LASTEXITCODE
+} finally { $ErrorActionPreference = $savedPreference }
+if ($null -eq $gradleExit -or $gradleExit -ne 0) {
+    throw "Gradle failed (exit code: $gradleExit). See the Gradle error above."
+}
 Get-FileHash -Algorithm SHA256 (Join-Path $root 'mc/build/libs/um-sa-bridge-0.1.0-diagnostic.jar')

@@ -13,3 +13,8 @@ dist/
 .pytest_cache/
 # the parent repo ignores bin/ (build output); the CLI launcher lives here
 !bin/
+# Windows diagnostic bridge build outputs (never game installations)
+/READY/
+/READY.previous-*/
+/.ready-stage-*/
+/BUILD-LOGS/

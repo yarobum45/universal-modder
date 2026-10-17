@@ -135,3 +135,48 @@ output). It contains this example's source/docs/helpers, no game assets, JDK,
 Gradle, jar, DLL/ASI or compiled mod. Main next gate remains the user's actual
 Windows build and in-game evidence; this cloud result must not be promoted to
 “working mod” or “SA DE compatible” without those checks.
+
+## 2026-10-17 — double-click Windows build launcher
+
+User requested a repository-root BUILD.bat using their installed JDK17 path
+`C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot`.
+Added ASCII/CRLF BUILD.bat: setlocal scopes JAVA_HOME/PATH, pushd uses the script's
+own directory (independent of caller cwd), child PowerShell runs the build,
+nonzero result prints an error and pause keeps the window open. No registry,
+setx, machine/user environment writes or game-directory installation. The
+ExecutionPolicy Bypass command-line flag applies only to the child process.
+
+Build-Ready.ps1 starts a timestamped transcript under repository BUILD-LOGS.
+Existing READY is moved to a timestamped READY.previous directory, preserving
+all files and preventing stale output appearing current. Build-Forge.ps1 runs
+clean build, captures native stdout/stderr for the transcript and throws on
+nonzero/missing native exit status. Only a successful build with the expected
+nonempty jar stages READY, CLEO script (literal [fs] filename), BOM UTF-8 short
+Russian install instructions and jar SHA-256. The completed transcript is
+copied after closing it; Explorer is opened after successful packaging. Build
+outputs and previous bundles are ignored by Git; no game files are touched.
+
+Validation: downloaded portable PowerShell7.4.6 from the official PowerShell
+release, verified its official SHA-256 manifest, and executed the actual PS
+helpers in temporary fixture repositories outside the checkout. A temporary
+fake Gradle executable was used ONLY to exercise packaging/control flow. Those
+fixture jar files are not real mods and never entered this repository or ZIP.
+Passed: path with spaces, unrelated cwd, literal bracket filename, success bundle
+contents/hash/log, native stderr in transcript, failure exit23/reason captured,
+old READY preserved with no new READY despite stale jar, missing JDK failure.
+The test caught a local LASTEXITCODE shadowing issue; fixed using the process's
+global PowerShell automatic variable, then reran all three scenarios successfully.
+The initially read-only PowerShell cache/data locations were redirected via XDG
+variables for these Linux checks only. Windows settings were not changed.
+
+Not executed here: cmd.exe/double-click on Windows, Windows PowerShell5.1 or
+Windows Explorer. Source avoids PS7-only syntax, but those remain Windows checks.
+Real Forge clean build was attempted separately with verified JDK17/Gradle8.1.1
+and the configured HTTPS proxy: failed with HTTP403 for ForgeGradle6.0.24 POM
+at maven.minecraftforge.net, before Java compilation. Full evidence retained in
+BUILD-LOGS/cloud-forge-build.log (ignored output). No real jar or READY produced.
+
+Lint: example publish check passed 27 files, zero failures/warnings. Repository
+publish check passed with zero failures and three pre-existing documentation-path
+warnings. Changes will be pushed to the existing codex/minecraft-sa-de-bridge
+branch as requested; branch ZIP contains source/build instructions, not a ready mod.
