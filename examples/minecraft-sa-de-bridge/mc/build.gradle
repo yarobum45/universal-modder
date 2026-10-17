@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'net.minecraftforge.gradle' version '6.0.24'
+}
+group = 'dev.universalmodder'
+version = '0.1.0-diagnostic'
+base { archivesName = 'um-sa-bridge' }
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+minecraft {
+    mappings channel: 'official', version: '1.20.1'
+    runs {
+        client {
+            workingDirectory project.file('run')
+            mods { um_sa_bridge { source sourceSets.main } }
+        }
+    }
+}
+repositories { mavenCentral() }
+dependencies { minecraft 'net.minecraftforge:forge:1.20.1-47.2.0' }
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+jar.finalizedBy('reobfJar')

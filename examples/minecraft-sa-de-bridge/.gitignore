@@ -1,0 +1,7 @@
+/mc/.gradle/
+/mc/run/
+/mc/build/
+/mc/gradle/
+/mc/gradlew
+/mc/gradlew.bat
+/artifacts/

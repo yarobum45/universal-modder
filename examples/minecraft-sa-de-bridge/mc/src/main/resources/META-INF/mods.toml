@@ -1,0 +1,20 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="MIT"
+[[mods]]
+modId="um_sa_bridge"
+version="0.1.0-diagnostic"
+displayName="Universal Modder SA DE Diagnostic Bridge"
+description='''Heartbeat/ACK and read-only telemetry prototype. No rendering or gameplay integration.'''
+[[dependencies.um_sa_bridge]]
+modId="forge"
+mandatory=true
+versionRange="[47,)"
+ordering="NONE"
+side="CLIENT"
+[[dependencies.um_sa_bridge]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1]"
+ordering="NONE"
+side="CLIENT"
